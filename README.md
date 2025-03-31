@@ -18,6 +18,9 @@ controlador dominio: **dc01.mistik.edu**
   Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools
   ````
 - Instalar Active Directory como dominio mistik.edu
+
+link: [Script-instalar-Active-Directory-como-dominio-mistik-edu.sh](url)
+
 - Configuración Post-Instalación de Active Directory (UOs, grupos, usuarios…)
 - Crear directorio Perfiles, compartirlo y ocultarlo$
 - Crear y compartir RECURSOS PROFES para que gProfes tengan acceso total y gAlumn solo leer
