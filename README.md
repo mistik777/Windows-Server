@@ -2,10 +2,10 @@
 
 Los siguientes scripts son para instalar Active Directory en un equipo con Windows Server, promover a controlador de dominio y crear la estructura de la imagen mediante cmdlets de PowerShell.
 
-# 👷‍♀️ Dominio
+# 👷‍♀️ Dominio y DC
 
-dominio: mistik.edu
-controlador dominio: dc01.mistik.edu
+dominio: **mistik.edu**
+controlador dominio: **dc01.mistik.edu**
 
 # 🛣️ Pasos:
 
