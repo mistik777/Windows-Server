@@ -16,3 +16,6 @@ controlador dominio: **dc01.mistik.edu**
 - Crear directorio Perfiles, compartirlo y ocultarlo$
 - Crear y compartir RECURSOS PROFES para que gProfes tengan acceso total y gAlumn solo leer
 - Crear y compartir RECURSOS ALUMNO para que gProfes y gAlumnos tengan acceso total
+
+# 🗺️ Esquema:
+<img src="https://raw.githubusercontent.com/mistik777/windows-server/refs/heads/main/estructura-cliente-servidor-windows-server.webp">
