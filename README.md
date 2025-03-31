@@ -10,7 +10,13 @@ controlador dominio: **dc01.mistik.edu**
 # 🛣️ Pasos:
 
 - Pemitir ejecución de scripts en PowerShell:
+  ````
+  Set-ExecutionPolicy Unrestricted -Force
+  ````
 - Instalar la característica AD-Domain-Services:
+  ````
+  Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools
+  ````
 - Instalar Active Directory como dominio mistik.edu
 - Configuración Post-Instalación de Active Directory (UOs, grupos, usuarios…)
 - Crear directorio Perfiles, compartirlo y ocultarlo$
