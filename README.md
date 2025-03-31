@@ -21,11 +21,11 @@ controlador dominio: **dc01.mistik.edu**
 [Script-instalar-Active-Directory-como-dominio-mistik.edu](Script-instalar-Active-Directory-como-dominio-mistik-edu.ps1)  
 - Configuración Post-Instalación de Active Directory (UOs, grupos, usuarios…)  
 [Script-de-Configuracion-Post-Instalacion-de-Active-Directory-UOs-grupos-usuarios.ps1](Script-de-Configuracion-Post-Instalacion-de-Active-Directory-UOs-grupos-usuarios.ps1)  
-- Crear directorio Perfiles, compartirlo y ocultarlo$
+- Crear directorio Perfiles, compartirlo y ocultarlo$  
 [Crear directorio Perfiles, compartirlo y ocultarlo$](Script-Crear-directorio-Perfiles-compartirlo-y-ocultarlo$.ps1)  
-- Crear y compartir RECURSOS PROFES para que gProfes tengan acceso total y gAlumn solo leer
+- Crear y compartir RECURSOS PROFES para que gProfes tengan acceso total y gAlumn solo leer  
 [Crear y compartir RECURSOS PROFES](Script-Crear-y-compartir-RECURSOS-PROFES.ps1)  
-- Crear y compartir RECURSOS ALUMNO para que gProfes y gAlumnos tengan acceso total
+- Crear y compartir RECURSOS ALUMNO para que gProfes y gAlumnos tengan acceso total  
 [Crear y compartir RECURSOS ALUMNO](Script-Crear-y-compartir-RECURSOS-ALUMNO.ps1)  
 
 # 🗺️ Esquema:
