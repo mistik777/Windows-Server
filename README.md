@@ -19,7 +19,9 @@ controlador dominio: **dc01.mistik.edu**
   ````
 - Instalar Active Directory como dominio mistik.edu
 
-link: [[Script-instalar-Active-Directory-como-dominio-mistik-edu.sh]]([url](https://github.com/mistik777/Windows-Server/blob/main/Script-instalar-Active-Directory-como-dominio-mistik-edu.sh))
+````
+https://github.com/mistik777/Windows-Server/blob/main/Script-instalar-Active-Directory-como-dominio-mistik-edu.sh
+````
 
 - Configuración Post-Instalación de Active Directory (UOs, grupos, usuarios…)
 - Crear directorio Perfiles, compartirlo y ocultarlo$
