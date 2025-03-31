@@ -1,8 +1,8 @@
-#💻 Windows-Server instalación mediante cmdlets en PowerShell
+# 💻 Windows-Server instalación mediante cmdlets en PowerShell
 
 Los siguientes scripts son para instalar Active Directory en un equipo con Windows Server, promover a controlador de dominio y crear la estructura de la imagen mediante cmdlets de PowerShell.
 
-#🛣️ Pasos:
+# 🛣️ Pasos:
 
 - Permite ejecución de scripts en PowerShell:
 - Instala la característica AD-Domain-Services:
