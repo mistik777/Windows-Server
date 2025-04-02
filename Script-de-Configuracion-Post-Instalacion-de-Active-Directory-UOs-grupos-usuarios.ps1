@@ -12,6 +12,7 @@ Try {
 }
 
 # Crear Unidades Organizativas (OUs)
+$ouPath = "DC=mistik,DC=edu"
 New-ADOrganizationalUnit -Name "ASIR" -Path $ouPath -ProtectedFromAccidentalDeletion $true
 New-ADOrganizationalUnit -Name "Profes" -Path "OU=ASIR,$ouPath" -ProtectedFromAccidentalDeletion $true
 New-ADOrganizationalUnit -Name "Alumnos" -Path "OU=ASIR,$ouPath" -ProtectedFromAccidentalDeletion $true
