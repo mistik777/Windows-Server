@@ -1,97 +1,73 @@
-# Solicitar al usuario que ingrese el Handle ID (ejemplo: 0x1fc)
-$handleId = Read-Host "Introduce el Handle ID (por ejemplo: 0x1fc)"
+# Mostrar tabla de eventos comunes relacionados con handles
+Write-Host "`nEventos relacionados con handles"
+Write-Host "ID Evento`tDescripción`t`tCategoría"
+Write-Host "---------`t-----------------------------`t-------------------------"
+@"
+4656    Se ha solicitado acceso a un objeto      Acceso a objetos
+4660    Se ha eliminado un objeto                Acceso a objetos
+4663    Se ha accedido a un objeto               Acceso a objetos
+4658    Se ha cerrado el identificador de un objeto Acceso a objetos
+"@ | Write-Host
 
-# Validación del formato de Handle ID (debe ser hexadecimal)
-if ($handleId -notmatch "^0x[0-9a-fA-F]+$") {
-    Write-Host "El Handle ID debe estar en formato hexadecimal (ejemplo: 0x1fc)." -ForegroundColor Red
+# Solicitar el handle al usuario
+$handle = Read-Host "`nIntroduce el handle que deseas buscar (ejemplo: 0x0000000000000004)"
+
+# Validar si el handle está en formato hexadecimal
+if (-not $handle -match '^0x[0-9A-Fa-f]+$') {
+    Write-Host "El valor introducido no es un handle válido en formato hexadecimal (ejemplo: 0x0000000000000004)." -ForegroundColor Red
     exit
 }
 
-# Preguntar al usuario cuantos días hacia atrás desea buscar
-$daysInput = Read-Host "¿Cuántos días atrás quieres buscar? (por defecto: 1)"
-if (-not [int]::TryParse($daysInput, [ref]$null)) {
+# Opcional: permitir ajustar días hacia atrás
+$days = Read-Host "¿Cuántos días atrás quieres buscar? (Por defecto: 1)"
+if (-not [int]::TryParse($days, [ref]0)) {
     $days = 1
-} else {
-    $days = [int]$daysInput
 }
 
-# Calcular la fecha de inicio para la búsqueda
-$startTime = (Get-Date).AddDays(-$days)
+# Buscar eventos relacionados con el handle
+Write-Host "`nBuscando eventos relacionados con el handle $handle en los últimos $days día(s)...`n"
 
-# Mostrar mensaje al usuario
-Write-Host "`nBuscando eventos con Handle ID = $handleId en los últimos $days día(s)...`n"
-
-# Obtener eventos de 'Security' (puedes cambiarlo por otro registro si lo deseas)
 try {
     $events = Get-WinEvent -FilterHashtable @{
-        LogName   = 'Security'
-        StartTime = $startTime
-    } -ErrorAction Stop
-} catch {
-    Write-Host "❌ No se pudo acceder al registro de eventos 'Security'."
-    Write-Host "ℹ️  Ejecuta PowerShell como **administrador** para poder acceder a estos eventos." -ForegroundColor Yellow
-    exit
-}
+        LogName = 'Security';
+        Id = 4656, 4660, 4663, 4658;
+        StartTime = (Get-Date).AddDays(-[int]$days)
+    } | Where-Object { $_.Message -match "$handle" }
 
-if (-not $events) {
-    Write-Host "No se encontraron eventos o no hay acceso al registro." -ForegroundColor Yellow
-    exit
-}
+    if ($events) {
+        foreach ($event in $events) {
+            Write-Host "`nFecha y hora: $($event.TimeCreated)"
+            Write-Host "Mensaje del evento:"
+            Write-Host $event.Message
+            Write-Host "-----------------------------------------------"
 
-# Buscar los eventos con el Handle ID especificado
-$matches = @()
+            # Extraer información adicional del mensaje
+            $nombreCuenta = "No disponible"
+            $dominioCuenta = "No disponible"
+            $nombreObjeto = "No disponible"
 
-foreach ($event in $events) {
-    try {
-        $xmlRaw = $event.ToXml()
-        if (-not $xmlRaw) { continue }
-
-        $xml = [xml]$xmlRaw
-        $handleField = $xml.Event.EventData.Data | Where-Object { $_.Name -eq "HandleId" }
-
-        if ($handleField -and $handleField.'#text' -eq $handleId) {
-            $data = @{}
-            foreach ($item in $xml.Event.EventData.Data) {
-                $data[$item.Name] = $item.'#text'
+            if ($event.Message -match "Nombre de cuenta:\s+([^\r\n]+)") {
+                $nombreCuenta = $matches[1]
             }
 
-            # Almacenar los eventos que coinciden
-            $matches += [PSCustomObject]@{
-                Fecha         = $event.TimeCreated
-                EventoID      = $event.Id
-                Usuario       = $data["SubjectUserName"]
-                Dominio       = $data["SubjectDomainName"]
-                Objeto        = $data["ObjectName"]
-                TipoObjeto    = $data["ObjectType"]
-                Acceso        = $data["AccessMask"]
-                Proceso       = $data["ProcessName"]
-                ProcesoID     = $data["ProcessId"]
-                HandleId      = $data["HandleId"]
-                Mensaje       = $event.Message
+            if ($event.Message -match "Dominio de cuenta:\s+([^\r\n]+)") {
+                $dominioCuenta = $matches[1]
             }
+
+            if ($event.Message -match "Nombre de objeto:\s+([^\r\n]+)") {
+                $nombreObjeto = $matches[1]
+            }
+
+            # Mostrar información resumida al final
+            Write-Host "`nInformación resumida:"
+            Write-Host "Nombre de cuenta: $nombreCuenta"
+            Write-Host "Dominio de cuenta: $dominioCuenta"
+            Write-Host "Nombre de objeto: $nombreObjeto"
+            Write-Host "==============================================="
         }
-    } catch {
-        continue
+    } else {
+        Write-Host "No se encontraron eventos para el handle $handle en los últimos $days día(s)." -ForegroundColor Yellow
     }
-}
-
-# Mostrar resultados
-if ($matches.Count -eq 0) {
-    Write-Host "⚠️ No se encontraron eventos con HandleId $handleId." -ForegroundColor Yellow
-} else {
-    Write-Host "✅ Se encontraron $($matches.Count) evento(s) con HandleId $handleId.`n" -ForegroundColor Green
-    foreach ($match in $matches) {
-        Write-Host "----------------------------------------" -ForegroundColor Cyan
-        Write-Host "Fecha:         $($match.Fecha)"
-        Write-Host "Evento ID:     $($match.EventoID)"
-        Write-Host "Usuario:       $($match.Usuario)"
-        Write-Host "Dominio:       $($match.Dominio)"
-        Write-Host "Objeto:        $($match.Objeto)"
-        Write-Host "Tipo Objeto:   $($match.TipoObjeto)"
-        Write-Host "Acceso:        $($match.Acceso)"
-        Write-Host "Proceso:       $($match.Proceso)"
-        Write-Host "ID Proceso:    $($match.ProcesoID)"
-        Write-Host "HandleId:      $($match.HandleId)"
-        Write-Host "`nMensaje:`n$($match.Mensaje)`n"
-    }
+} catch {
+    Write-Host "Error al recuperar los eventos. Asegúrate de tener permisos de administrador y que el registro exista." -ForegroundColor Red
 }
